@@ -1,7 +1,7 @@
-import { Class, Component } from "@fwge/ecs";
 import { Keyframe } from "./Keyframe";
+import { ValueGetter, ValueSetter } from "./transitions";
 
-export class AnimationTrack<T extends Component, U extends keyof T = any>
+export class AnimationTrack<T>
 {
     get Length(): number
     {
@@ -9,8 +9,9 @@ export class AnimationTrack<T extends Component, U extends keyof T = any>
     }
     
     constructor(
-        readonly Component: Class<T>, 
-        readonly Property: U, 
-        readonly KeyFrames: Keyframe<T[U]>[]
+        readonly Name: string,
+        readonly GetValue: ValueGetter<T>,
+        readonly SetValue: ValueSetter<T>,
+        readonly KeyFrames: Keyframe<T>[]
     ) {}
 }

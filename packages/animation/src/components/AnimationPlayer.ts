@@ -13,6 +13,11 @@ export class AnimationPlayer extends Component
     private _nextAnimation = '';
     private _currentFrame = new Map<TypeId, Map<string, number>>();
     
+    get Running(): boolean
+    {
+        return !!this._nextAnimation || !!this._currentAnimation;
+    }
+
     get CurrentAnimation(): Animation | undefined
     {
         return this._currentAnimation;
@@ -108,22 +113,15 @@ export class AnimationPlayer extends Component
         }
 
         const currentFrames = this._currentAnimation.GetCurrentFrames(this._elapsed);
-        for (const {curr, next, type, prop, length} of currentFrames)
+        for (const {curr, next, get, set, length} of currentFrames)
         {
-            const component = entity.GetComponent(type)!;
-            const property = component[prop as keyof Component] as any;
-
-            const updatedProperty = curr.Transition(
+            const updatedValue = curr.Transition(
                 (this._elapsed - curr.Time) / length,
                 curr.Value,
                 next.Value,
-                property
+                get(entity)
             );
-
-            if (!('Set' in property))
-            {
-                (component[prop as keyof Component] as any) = updatedProperty;
-            }
+            set(entity, updatedValue);
         }
     }
 

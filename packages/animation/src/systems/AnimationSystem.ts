@@ -16,6 +16,10 @@ export class AnimationSystem extends System
         {
             const entity = Registry.GetEntity(entityId)!
             const animationPlayer = Registry.GetComponent(entityId, AnimationPlayer)!
+            if (!animationPlayer.Running)
+            {
+                continue;
+            }
             animationPlayer.Update(entity, delta);
         }
     }

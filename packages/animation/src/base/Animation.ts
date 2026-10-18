@@ -2,16 +2,18 @@ import { Class, Component, TypeId } from "@fwge/ecs";
 import { AnimationTrack } from "./AnimationTrack";
 import { Keyframe } from "./Keyframe";
 import { Asset } from "@fwge/core";
+import { ValueGetter, ValueSetter } from "./transitions";
 
 export interface IAnimation
 {
     loop: boolean
 }
 
-export interface AnimationFrame<T extends Component = any>
+export interface AnimationFrame<T>
 {
-    type: TypeId;
-    prop: keyof T;
+    get: ValueGetter<T>;
+    set: ValueSetter<T>;
+    
     length: number;
     curr: Keyframe<T>;
     next: Keyframe<T>;
@@ -19,8 +21,8 @@ export interface AnimationFrame<T extends Component = any>
 
 export class Animation extends Asset
 {
-    public readonly Tracks = new Map<number, Map<string, AnimationTrack<any, any>>>();
-    public readonly Summary: AnimationFrame[] = []
+    public readonly Tracks: Map<string, AnimationTrack<any>> = new Map();
+    public readonly Summary: AnimationFrame<any>[] = [];
     public Loop: boolean;
     private _totalLength: number = 0;
 
@@ -38,21 +40,21 @@ export class Animation extends Asset
         this.Loop = args?.loop ?? false;
     }
 
-    AddTrack<T extends Component, U extends keyof T>(track: AnimationTrack<T, U>): void
+    AddTrack<T>(track: AnimationTrack<T>): void
     {
-        if (!this.Tracks.has(track.Component.TypeId))
+        if (!this.Tracks.has(track.Name))
         {
-            this.Tracks.set(track.Component.TypeId, new Map());
+            this.Tracks.set(track.Name, track);
         }
 
-        this.Tracks.get(track.Component.TypeId)!.set(track.Property as string, track);
         for (let i = 0; i < track.KeyFrames.length - 1; ++i)
         {
             const curr = track.KeyFrames[i];
             const next = track.KeyFrames[i + 1];
             this.Summary.push({
-                prop: track.Property,
-                type: track.Component.TypeId,
+                get: track.GetValue,
+                set: track.SetValue,
+                
                 length: next.Time - curr.Time,
                 curr,
                 next
@@ -62,20 +64,20 @@ export class Animation extends Asset
         }
     }
 
-    GetTrack<T extends Component, U extends keyof T>(componentTypeId: TypeId, property: U): AnimationTrack<T, U> | undefined
-    GetTrack<T extends Component, U extends keyof T>(component: Class<T>, property: U): AnimationTrack<T, U> | undefined
-    GetTrack<T extends Component, U extends keyof T>(c: TypeId | Class<T>, property: U): AnimationTrack<T, U> | undefined
-    {
-        const typeId = typeof c === 'number' ? c : c.TypeId;
-        return this.Tracks.get(typeId)?.get(property as string);
-    }
+    // GetTrack<T extends Component, U extends keyof T>(componentTypeId: TypeId, property: U): AnimationTrack<T, U> | undefined
+    // GetTrack<T extends Component, U extends keyof T>(component: Class<T>, property: U): AnimationTrack<T, U> | undefined
+    // GetTrack<T extends Component, U extends keyof T>(c: TypeId | Class<T>, property: U): AnimationTrack<T, U> | undefined
+    // {
+    //     const typeId = typeof c === 'number' ? c : c.TypeId;
+    //     return this.Tracks.get(typeId)?.get(property as string);
+    // }
 
-    RemoveTrack<T extends Component, U extends keyof T>(component: Class<T>, property: U): void
-    {
-        this.Tracks.get(component.TypeId)?.delete(property as string);
-    }
+    // RemoveTrack<T extends Component, U extends keyof T>(component: Class<T>, property: U): void
+    // {
+    //     this.Tracks.get(component.TypeId)?.delete(property as string);
+    // }
 
-    GetCurrentFrames(elapsed: number): AnimationFrame[]
+    GetCurrentFrames(elapsed: number): AnimationFrame<any>[]
     {
         return this.Summary.filter(frame => {
             return frame.curr.Time <= elapsed && elapsed <= frame.next.Time
