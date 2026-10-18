@@ -61,7 +61,6 @@ export class Registry
 
     //#region Entity
     public static CreateEntity<T extends Entity = Entity>(entity: T): EntityId
-
     {
         const entityId = this.entityComponentList.Add([]);
         this.entityGraph[entityId] = {

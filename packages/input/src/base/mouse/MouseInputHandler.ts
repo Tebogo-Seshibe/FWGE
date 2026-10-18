@@ -1,33 +1,30 @@
-import { Vector2 } from "@fwge/common";
 import { ButtonState, WheelState } from "../InputState";
 import { MouseState } from "./MouseState";
 
-
 export class MouseInputHandler
 {
-    public static readonly TOTAL_KEYS = 12;
-    private readonly dimensions: Uint8ClampedArray = new Uint8ClampedArray(4);
-    private readonly offset: Vector2 = new Vector2();
+    public readonly State: MouseState;
     
-    public readonly State: MouseState
     constructor(
-        private readonly canvas: HTMLCanvasElement,
-        private readonly mouseMovement: Float32Array, 
-        private readonly mouseButtons: Uint8ClampedArray
+        private readonly _canvas: HTMLCanvasElement,
+        private readonly _mouseMovement: Float32Array, 
+        private readonly _mouseButtons: Uint8ClampedArray,
+        private readonly _dimensions: Uint8ClampedArray,
+        private readonly _offset: Float32Array
     ) {
-        this.State = new MouseState(mouseMovement, mouseButtons);
+        this.State = new MouseState(_mouseMovement, _mouseButtons);
     }
 
     Start(): void
     {
-        this.canvas.addEventListener('resize', this._resize.bind(this));
-        this.canvas.addEventListener('click', this._click.bind(this));
-        this.canvas.addEventListener('dblclick', this._dblclick.bind(this));
-        this.canvas.addEventListener('mousedown', this._mousedown.bind(this));
-        this.canvas.addEventListener('mouseup', this._mouseup.bind(this));
-        this.canvas.addEventListener('mousemove', this._mousemove.bind(this));
-        this.canvas.addEventListener('contextmenu', this._contextmenu.bind(this));
-        this.canvas.addEventListener('wheel', this._wheel.bind(this));
+        this._canvas.addEventListener('resize', this._resize.bind(this));
+        this._canvas.addEventListener('click', this._click.bind(this));
+        this._canvas.addEventListener('dblclick', this._dblclick.bind(this));
+        this._canvas.addEventListener('mousedown', this._mousedown.bind(this));
+        this._canvas.addEventListener('mouseup', this._mouseup.bind(this));
+        this._canvas.addEventListener('mousemove', this._mousemove.bind(this));
+        this._canvas.addEventListener('contextmenu', this._contextmenu.bind(this));
+        this._canvas.addEventListener('wheel', this._wheel.bind(this));
         this._resize();
     }
 
@@ -35,33 +32,34 @@ export class MouseInputHandler
 
     Reset(): void
     {
-        this.mouseMovement[0] = 0;
-        this.mouseMovement[1] = 0;
-        this.mouseButtons[0] = 0;
+        this._mouseMovement[0] = 0;
+        this._mouseMovement[1] = 0;
+        this._mouseButtons[0] = 0;
     }
     
     Stop(): void
     {
-        this.canvas.removeEventListener('resize', this._resize.bind(this));
-        this.canvas.removeEventListener('click', this._click.bind(this));
-        this.canvas.removeEventListener('dblclick', this._dblclick.bind(this));
-        this.canvas.removeEventListener('mousedown', this._mousedown.bind(this));
-        this.canvas.removeEventListener('mouseup', this._mouseup.bind(this));
-        this.canvas.removeEventListener('mousemove', this._mousemove.bind(this));
-        this.canvas.removeEventListener('contextmenu', this._contextmenu.bind(this));
-        this.canvas.removeEventListener('wheel', this._wheel.bind(this));
+        this._canvas.removeEventListener('resize', this._resize.bind(this));
+        this._canvas.removeEventListener('click', this._click.bind(this));
+        this._canvas.removeEventListener('dblclick', this._dblclick.bind(this));
+        this._canvas.removeEventListener('mousedown', this._mousedown.bind(this));
+        this._canvas.removeEventListener('mouseup', this._mouseup.bind(this));
+        this._canvas.removeEventListener('mousemove', this._mousemove.bind(this));
+        this._canvas.removeEventListener('contextmenu', this._contextmenu.bind(this));
+        this._canvas.removeEventListener('wheel', this._wheel.bind(this));
         
         this.Reset();
     }
 
     private _resize()
     {
-        const { top, left, width, height } = this.canvas.getBoundingClientRect();
-        this.dimensions[0] = top;
-        this.dimensions[1] = left;
-        this.dimensions[2] = width;
-        this.dimensions[3] = height;
-        this.offset.Set(left + (width / 2), top + (height / 2))
+        const { top, left, width, height } = this._canvas.getBoundingClientRect();
+        this._dimensions[0] = top;
+        this._dimensions[1] = left;
+        this._dimensions[2] = width;
+        this._dimensions[3] = height;
+        this._offset[0] = left + (width / 2);
+        this._offset[1] = top + (height / 2);
     }
 
     private _click(e: MouseEvent): void
@@ -78,26 +76,26 @@ export class MouseInputHandler
     {
         e.preventDefault()
 
-        this.mouseButtons[e.button + 1] = ButtonState.PRESSED
+        this._mouseButtons[e.button + 1] = ButtonState.PRESSED
     }
     
     private _mouseup(e: MouseEvent): void
     {
         e.preventDefault()
 
-        this.mouseButtons[e.button + 1] = ButtonState.RAISED
+        this._mouseButtons[e.button + 1] = ButtonState.RAISED
     }
     
     private _mousemove(e: MouseEvent): void
     {
         e.preventDefault()
         
-        this.mouseMovement[0] = e.movementX
-        this.mouseMovement[1] = e.movementY
-        this.mouseMovement[2] = e.clientX
-        this.mouseMovement[3] = e.clientY
-        this.mouseMovement[4] = e.clientX - this.dimensions[1] - (this.dimensions[2] / 2)
-        this.mouseMovement[5] = -e.clientY + this.dimensions[0] + (this.dimensions[3] / 2)
+        this._mouseMovement[0] = e.movementX
+        this._mouseMovement[1] = e.movementY
+        this._mouseMovement[2] = e.clientX
+        this._mouseMovement[3] = e.clientY
+        this._mouseMovement[4] = e.clientX - this._dimensions[1] - (this._dimensions[2] / 2)
+        this._mouseMovement[5] = -e.clientY + this._dimensions[0] + (this._dimensions[3] / 2)
     }
     
     private _contextmenu(e: MouseEvent): void
@@ -109,7 +107,7 @@ export class MouseInputHandler
     {
         e.preventDefault()
 
-        this.mouseButtons[0] = e.deltaY > 0
+        this._mouseButtons[0] = e.deltaY > 0
             ? WheelState.DOWN
             : e.deltaY < 0 
                 ? WheelState.UP

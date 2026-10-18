@@ -1,7 +1,8 @@
 import { Game } from "@fwge/core";
 import { CubeMesh } from "./assets/CubeMesh";
 import { GridMesh } from "./assets/GridMesh";
-import { Scene1 } from "./scenes";
+import { EditorScene, Scene1 } from "./scenes";
+import { LightingExampleScene } from "./scenes/LightingExample";
 
 export class Project extends Game
 {
@@ -11,6 +12,8 @@ export class Project extends Game
     ];
     UseScenes = [
         Scene1,
+        // EditorScene,
+        // LightingExampleScene
     ];
     
     constructor() {

@@ -1,6 +1,6 @@
 import { FixedLengthArray } from '@fwge/common';
-import { ControllerState, KeyboardState, MouseState } from '..';
 import { Component } from '@fwge/ecs';
+import { ControllerState, KeyboardState, MouseState } from '..';
 
 export interface IInputArgs
 {

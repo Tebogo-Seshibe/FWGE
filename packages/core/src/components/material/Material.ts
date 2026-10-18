@@ -1,4 +1,4 @@
-import { Colour3, GL, isPowerOf2, Scalar } from "@fwge/common";
+import { Colour3, Colour3Array, GL, isPowerOf2, Scalar } from "@fwge/common";
 import { Game, ImageAsset } from "../../base";
 import { Shader } from "../../base/shader/Shader";
 import { Component } from "@fwge/ecs";
@@ -53,6 +53,11 @@ export class Material extends Component
     get Colour()
     {
         return this.colour;
+    }
+
+    set Colour(colour: Colour3 | Colour3Array)
+    {
+        this.colour.Set(colour as Colour3Array);
     }
 
     constructor(

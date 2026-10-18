@@ -34,6 +34,16 @@ export class InputSystem extends System
         {
             type: Uint8ClampedArray,
             length: 128
+        },
+        dimensions:
+        {
+            type: Uint8ClampedArray,
+            length: 4
+        },
+        offset:
+        {
+            type: Float32Array,
+            length: 2
         }
     });
     
@@ -45,8 +55,10 @@ export class InputSystem extends System
 
     private readonly mouse: MouseInputHandler = new MouseInputHandler(
         GL.canvas as HTMLCanvasElement,
-        this.inputDataView.View('mouseMovement')!,
-        this.inputDataView.View('mouseButtons')!
+        this.inputDataView.View('mouseMovement'),
+        this.inputDataView.View('mouseButtons'),
+        this.inputDataView.View('dimensions'),
+        this.inputDataView.View('offset')
     );
     
     private readonly controllers: ControllerInputHandler = new ControllerInputHandler(

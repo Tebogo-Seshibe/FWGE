@@ -1,9 +1,11 @@
-import { DefaultWindow, Scene } from "@fwge/core";
+import { DefaultWindow, Scene, ScriptSystem } from "@fwge/core";
 import { EditorViewer } from "../entities/EditorViewer";
 import { Environment } from "../entities/Environment";
 import { GeneralAreaLight } from "../entities/GeneralAreaLight";
 import { Grid } from "../entities/Grid";
 import { Sun } from "../entities/Sun";
+import { InputSystem } from "@fwge/input";
+import { EditorRenderSystem, ProjectRenderSystem } from "../systems";
 
 export class EditorScene extends Scene
 {
@@ -18,9 +20,9 @@ export class EditorScene extends Scene
         Environment
     ];
     UseSystems = [
-        // InputSystem,
-        // ScriptSystem,
+        InputSystem,
+        ScriptSystem,
         // EditorRenderSystem,
-        // ProjectRenderSystem,
+        ProjectRenderSystem,
     ];
 }

@@ -7,6 +7,7 @@ export class ControllerState
     
     public readonly LeftStick: Readonly<Vector2>;
     public readonly RightStick: Readonly<Vector2>;
+    public readonly Buttons: Readonly<FixedLengthArray<ButtonState, 16>>;
     
     //#region Basic Buttons
     public get DirectionalUp(): ButtonState
@@ -173,12 +174,6 @@ export class ControllerState
         return this.Buttons[7];
     }
     //#endregion
-    
-    public readonly Buttons: Readonly<FixedLengthArray<ButtonState, 16>>;
-    public buffers: {
-        axes: Float32Array,
-        buttons: Uint8ClampedArray
-    };
 
     constructor(
         controllerAxes: Float32Array,
@@ -190,10 +185,6 @@ export class ControllerState
         this.LeftStick = new Vector2(controllerAxes.buffer, controllerAxes.byteOffset + ((0 + controllerAxesOffset) * Float32Array.BYTES_PER_ELEMENT));
         this.RightStick = new Vector2(controllerAxes.buffer, controllerAxes.byteOffset + ((2 + controllerAxesOffset) * Float32Array.BYTES_PER_ELEMENT));
         this.Buttons = new Uint8ClampedArray(controllerButtons.buffer, controllerButtons.byteOffset + (controllerButtonsOffset * Uint8ClampedArray.BYTES_PER_ELEMENT), 16) as any as FixedLengthArray<ButtonState, 16>;
-        
-        this.buffers = {
-            axes: controllerAxes,
-            buttons: controllerButtons
-        };
+
     }
 }

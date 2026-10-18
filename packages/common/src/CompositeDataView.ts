@@ -16,7 +16,7 @@ export type MappedSubDataView<T extends SubDataView> =
 
 export class CompositeDataView<T extends SubDataView> extends ArrayBuffer
 {
-    #views: MappedSubDataView<T> = Object.create(null);
+    private readonly _views: MappedSubDataView<T> = Object.create(null);
 
     constructor(views: T)
     {
@@ -39,7 +39,7 @@ export class CompositeDataView<T extends SubDataView> extends ArrayBuffer
             {
                 const totalLength = type.BYTES_PER_ELEMENT * length;
                 
-                this.#views[view as keyof T] = new type(this, offset, length);
+                this._views[view as keyof T] = new type(this, offset, length);
                 
                 offset += totalLength;
             });
@@ -47,6 +47,6 @@ export class CompositeDataView<T extends SubDataView> extends ArrayBuffer
 
     View<Key extends keyof MappedSubDataView<T>>(key: Key): MappedSubDataView<T>[Key]
     {
-        return this.#views[key];
+        return this._views[key];
     }
 }

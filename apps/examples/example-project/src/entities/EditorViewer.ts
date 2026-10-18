@@ -14,7 +14,7 @@ export class EditorViewer extends Entity
     private readonly rotationMatrix: Matrix3 = Matrix3.Zero;
 
     private readonly zoomSpeed: number = 50;
-    private readonly rotationSpeed: number = 50;
+    private readonly rotationSpeed: number = 10;
     private readonly panSpeed: number = 10;
 
     private transform!: Transform;
@@ -26,8 +26,8 @@ export class EditorViewer extends Entity
     Init()
     {        
         this.camera = new PerspectiveCamera({ farClipping: 100 });
-        this.cameraTransform = new Transform({ position: [0, 1, 0] });
-        this.transform = new Transform({ position: [0, 0, 10] });
+        this.cameraTransform = new Transform({ position: [0, 1, 0], rotation: [17, 0, 0] });
+        this.transform = new Transform({ position: [0, 22, 30] });
 
         this.AddChild(
             new Entity()

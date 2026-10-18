@@ -34,7 +34,7 @@ export class Lighting extends Entity
                 new AreaLight(
                 {
                     colour: [1, 1, 1],
-                    intensity: 5
+                    intensity: 5,
                 })
             );
         children.push(environment)
@@ -50,14 +50,14 @@ export class Lighting extends Entity
             .AddComponents(
                 new Transform(
                 {
-                    rotation: [40,0,0]
+                    rotation: [0,0,0]
                 }),
                 new DirectionalLight(
                 {
                     direction: [0,-1,0],
                     castShadows: true,
                     colour: [1,1,1],
-                    intensity: 50,
+                    intensity: 0,
                 })
             )
         children.push(sun)
@@ -68,7 +68,7 @@ export class Lighting extends Entity
     CreatePointLights()
     {
         const children = [];
-        const radius = 5;
+        const radius = 2;
         const step = 1;
         const min_y = 2;
         const max_y = 4;
@@ -79,14 +79,14 @@ export class Lighting extends Entity
             {
                 const child = new Entity()
                     .AddComponents(
-                        new Transform({ position: [x, randBetween(min_y, max_y), z] }),
+                        new Transform({ position: [x, 3, z] }),
                         // new Transform({ position: [0,y,0] }),
                         new PointLight(
                         { 
                             colour: [Math.random(), Math.random(), Math.random()],
                             // colour: [1.0, 1.0, 1.0],
-                            intensity: 1,
-                            radius: 5,
+                            intensity: 0,
+                            radius: 3,
                         })
                     );
                 children.push(child)

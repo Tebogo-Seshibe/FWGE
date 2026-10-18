@@ -14,10 +14,10 @@ export interface ISimpleTransform extends ITransform
 
 export interface ITransformBuffered extends ITransform
 {
-    buffer?: ArrayBuffer
-    positionOffset?: number
-    rotationOffset?: number
-    scaleOffset?: number
+    buffer: ArrayBuffer
+    positionOffset: number
+    rotationOffset: number
+    scaleOffset: number
 }
 
 export class Transform extends Component
@@ -35,9 +35,9 @@ export class Transform extends Component
 
         if ('buffer' in args && args.buffer)
         {
-            this.Position = new Vector3(args.buffer, args.positionOffset ?? 0);
-            this.Rotation = new Vector3(args.buffer, args.rotationOffset ?? 0);
-            this.Scale = new Vector3(args.buffer, args.scaleOffset ?? 0);
+            this.Position = new Vector3(args.buffer, args.positionOffset);
+            this.Rotation = new Vector3(args.buffer, args.rotationOffset);
+            this.Scale = new Vector3(args.buffer, args.scaleOffset);
         }
         else
         {

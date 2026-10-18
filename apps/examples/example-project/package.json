@@ -15,6 +15,7 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
+    "@fwge/animation": "workspace:*",
     "@fwge/common": "workspace:*",
     "@fwge/core": "workspace:*",
     "@fwge/ecs": "workspace:*",

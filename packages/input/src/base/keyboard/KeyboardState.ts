@@ -3,6 +3,8 @@ import { KeyState } from "../InputState";
 
 export class KeyboardState
 {
+    public readonly Keys: Readonly<FixedLengthArray<KeyState, 256>>;
+
     get KeyTilde(): KeyState
     {
         return this.Keys[192];
@@ -442,8 +444,6 @@ export class KeyboardState
     {
         return this.Keys[145];
     }
-
-    public readonly Keys: Readonly<FixedLengthArray<KeyState, 256>>;
     
     constructor(keys: Uint8ClampedArray)
     {

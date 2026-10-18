@@ -5,73 +5,74 @@ export const NUM_KEYBOARD_KEYS: number = 256;
 
 export class KeyboardInputHandler
 {
-    private readonly keyTicks: Uint8Array = new Uint8Array(NUM_KEYBOARD_KEYS);
     public readonly State: KeyboardState;
+    
+    private readonly _keyTicks: Uint8Array = new Uint8Array(NUM_KEYBOARD_KEYS);
 
     constructor(
-        private readonly canvas: HTMLCanvasElement,
-        private readonly keyDelay: number = 0.0,
-        private readonly keys: Uint8ClampedArray
+        private readonly _canvas: HTMLCanvasElement,
+        private readonly _keyDelay: number = 0.0,
+        private readonly _keys: Uint8ClampedArray
     ) {
-        this.State = new KeyboardState(keys);
+        this.State = new KeyboardState(_keys);
     }
     
     Start(): void        
     {
-        this.canvas.ownerDocument.documentElement.addEventListener('keydown', this.keydown.bind(this));
-        this.canvas.ownerDocument.documentElement.addEventListener('keyup', this.keyup.bind(this));
+        this._canvas.ownerDocument.documentElement.addEventListener('keydown', this.keydown.bind(this));
+        this._canvas.ownerDocument.documentElement.addEventListener('keyup', this.keyup.bind(this));
     }
 
     Update(delta: number): void
     {
-        for (let i = 0 ; i < this.keys.length; ++i)
+        for (let i = 0 ; i < this._keys.length; ++i)
         {
-            if (this.keyTicks[i] === 0)
+            if (this._keyTicks[i] === 0)
             {
-                switch(this.keys[i])
+                switch(this._keys[i])
                 {
                     case KeyState.PRESSED:
                     case KeyState.DOUBLE_PRESSED:
-                        this.keys[i] = KeyState.DOWN;
+                        this._keys[i] = KeyState.DOWN;
                         break
 
                     case KeyState.RELEASED:
-                        this.keys[i] = KeyState.UP;
+                        this._keys[i] = KeyState.UP;
                         break
                 }
             }
             else
             {
-                this.keyTicks[i] = 0;
+                this._keyTicks[i] = 0;
             }
         }
     }
 
     Stop(): void
     {
-        this.canvas.ownerDocument.documentElement.removeEventListener('keydown', this.keydown.bind(this));
-        this.canvas.ownerDocument.documentElement.removeEventListener('keyup', this.keyup.bind(this));
+        this._canvas.ownerDocument.documentElement.removeEventListener('keydown', this.keydown.bind(this));
+        this._canvas.ownerDocument.documentElement.removeEventListener('keyup', this.keyup.bind(this));
     }
 
     private keydown(e: KeyboardEvent)
     {
         // e.preventDefault();
 
-        if (this.keys[e.which] === KeyState.UP)
+        if (this._keys[e.which] === KeyState.UP)
         {
-            this.keys[e.which] = KeyState.PRESSED;
-            this.keyTicks[e.which] = 1;
+            this._keys[e.which] = KeyState.PRESSED;
+            this._keyTicks[e.which] = 1;
         }
-        else if (this.keys[e.which] === KeyState.RELEASED)
+        else if (this._keys[e.which] === KeyState.RELEASED)
         {
-            this.keys[e.which] = KeyState.DOUBLE_PRESSED;
-            this.keyTicks[e.which] = 1;
+            this._keys[e.which] = KeyState.DOUBLE_PRESSED;
+            this._keyTicks[e.which] = 1;
         }
     }
 
     private keyup(e: KeyboardEvent)
     {
         // e.preventDefault();
-        this.keys[e.which] = KeyState.RELEASED;
+        this._keys[e.which] = KeyState.RELEASED;
     }
 }

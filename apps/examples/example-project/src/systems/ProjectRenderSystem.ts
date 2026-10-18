@@ -78,7 +78,7 @@ export class ProjectRenderSystem extends System
         
         GL.bindFramebuffer(GL.FRAMEBUFFER, null);
         GL.viewport(0, 0, GL.drawingBufferWidth, GL.drawingBufferHeight);
-        GL.clearColor(1, 0, 0, 0);
+        GL.clearColor(0, 0, 0, 0);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         
         this.finalPassShader.Bind();

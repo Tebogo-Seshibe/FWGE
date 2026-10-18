@@ -1,10 +1,12 @@
 import { DefaultWindow, Scene, ScriptSystem } from "@fwge/core";
+import { AnimationSystem } from "@fwge/animation";
 import { InputSystem } from "@fwge/input";
 import { Cube } from "../entities/Cube";
 import { EditorViewer } from "../entities/EditorViewer";
 import { Lighting } from "../entities/Lighting";
 import { ProjectRenderSystem } from "../systems";
 import { Helipad } from "../entities/Helipad";
+import { Sphere } from "../entities/Sphere";
 
 export class Scene1 extends Scene
 {
@@ -18,11 +20,13 @@ export class Scene1 extends Scene
         // Sun,
         // Environment,
         Helipad,
+        Sphere,
         // Cube,
     ];
     UseSystems = [
         InputSystem,
         ScriptSystem,
+        AnimationSystem,
         ProjectRenderSystem,
     ];
     

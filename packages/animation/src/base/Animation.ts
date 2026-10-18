@@ -1,37 +1,97 @@
-import { Keyframe } from "./Keyframe"
-import { ValueGetter } from "./transitions"
-import { LinkedList } from "@fwge/common"
+import { Class, Component, TypeId } from "@fwge/ecs";
+import { AnimationTrack } from "./AnimationTrack";
+import { Keyframe } from "./Keyframe";
+import { Asset } from "@fwge/core";
 
 export interface IAnimation
 {
-    lifetime: number
     loop: boolean
-    keyframes: any[]
 }
 
-export interface AnimationFrame<T>
+export interface AnimationFrame<T extends Component = any>
 {
-    KeyFrames: LinkedList<Keyframe<T>>
-    ValueGetter: ValueGetter<T>
+    type: TypeId;
+    prop: keyof T;
+    length: number;
+    curr: Keyframe<T>;
+    next: Keyframe<T>;
 }
 
-export class Animation
+export class Animation extends Asset
 {
-    index: number = 0
-    lifetime: number = 0
-    totalLifetime: number = 0
-    loop: boolean = false
+    public readonly Tracks = new Map<number, Map<string, AnimationTrack<any, any>>>();
+    public readonly Summary: AnimationFrame[] = []
+    public Loop: boolean;
+    private _totalLength: number = 0;
 
-    AnimationFrames: Map<string, AnimationFrame<any>> = new Map()
-    CurrentKeyFrame: Map<string, Keyframe<any>> = new Map()
-
-    AddFrames<T>(field: string, frames: AnimationFrame<T>)
+    public get TotalLength(): number
     {
-        this.AnimationFrames.set(field, frames)
+        return this._totalLength;
+    }    
+
+    constructor()
+    constructor(anim: IAnimation)
+    constructor(args?: IAnimation)
+    {
+        super(Animation);
+        
+        this.Loop = args?.loop ?? false;
     }
 
-    get Completed(): boolean
+    AddTrack<T extends Component, U extends keyof T>(track: AnimationTrack<T, U>): void
     {
-        return this.CurrentKeyFrame.size === 0 && !this.loop
+        if (!this.Tracks.has(track.Component.TypeId))
+        {
+            this.Tracks.set(track.Component.TypeId, new Map());
+        }
+
+        this.Tracks.get(track.Component.TypeId)!.set(track.Property as string, track);
+        for (let i = 0; i < track.KeyFrames.length - 1; ++i)
+        {
+            const curr = track.KeyFrames[i];
+            const next = track.KeyFrames[i + 1];
+            this.Summary.push({
+                prop: track.Property,
+                type: track.Component.TypeId,
+                length: next.Time - curr.Time,
+                curr,
+                next
+            });
+
+            this._totalLength = Math.max(curr.Time, next.Time, this._totalLength);
+        }
+    }
+
+    GetTrack<T extends Component, U extends keyof T>(componentTypeId: TypeId, property: U): AnimationTrack<T, U> | undefined
+    GetTrack<T extends Component, U extends keyof T>(component: Class<T>, property: U): AnimationTrack<T, U> | undefined
+    GetTrack<T extends Component, U extends keyof T>(c: TypeId | Class<T>, property: U): AnimationTrack<T, U> | undefined
+    {
+        const typeId = typeof c === 'number' ? c : c.TypeId;
+        return this.Tracks.get(typeId)?.get(property as string);
+    }
+
+    RemoveTrack<T extends Component, U extends keyof T>(component: Class<T>, property: U): void
+    {
+        this.Tracks.get(component.TypeId)?.delete(property as string);
+    }
+
+    GetCurrentFrames(elapsed: number): AnimationFrame[]
+    {
+        return this.Summary.filter(frame => {
+            return frame.curr.Time <= elapsed && elapsed <= frame.next.Time
+        });
+    }
+
+    Load(protocol?: (...args: any[]) => Promise<Blob>): Promise<any> {
+        return Promise.resolve();
+    }
+    Reset(): void {
+        throw new Error("Method not implemented.");
+    }
+    Unload(): void {
+        throw new Error("Method not implemented.");
+    }
+    Destroy(): void {
+        throw new Error("Method not implemented.");
     }
 }

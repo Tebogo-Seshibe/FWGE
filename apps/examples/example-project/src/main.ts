@@ -9,6 +9,7 @@ import { CubeShaderAsset } from './assets/CubeShader';
 import { Registry } from '@fwge/ecs';
 import { Helipad } from './assets/Helipad';
 import { Suzanne } from './assets/Suzanne';
+import { SphereAsset } from './assets/SphereAsset';
 
 const game = new Project();
 await AssetManager
@@ -26,6 +27,7 @@ await AssetManager
     .Add('Sphere', OBJMTLAsset, './public/objects/Sphere/Sphere.obj', './public/objects/Sphere/Sphere.mtl')
     .Add('SmoothSphere', OBJMTLAsset, './public/objects/SmoothSphere/SmoothSphere.obj', './public/objects/SmoothSphere/SmoothSphere.mtl')
     .Add('Cube', OBJMTLAsset, './public/objects/Cube/Cube.obj', './public/objects/Cube/Cube.mtl')
+    .Add('MySphere', SphereAsset)
     .Init();
 await game.Init();
 

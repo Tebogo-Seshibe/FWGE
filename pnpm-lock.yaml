@@ -202,6 +202,9 @@ importers:
 
   apps/examples/example-project:
     dependencies:
+      '@fwge/animation':
+        specifier: workspace:*
+        version: link:../../../packages/animation
       '@fwge/common':
         specifier: workspace:*
         version: link:../../../packages/common

@@ -185,22 +185,16 @@ void main(void)
         area += CalcAreaLight(U_AreaLight[i]);
     }
         
-    for (int i = 0; i < U_DirectionalLight.length(); ++i)
-    {
-        dir += CalcDirectionalLight(U_DirectionalLight[i]);
-    }
+    // for (int i = 0; i < U_DirectionalLight.length(); ++i)
+    // {
+    //     dir += CalcDirectionalLight(U_DirectionalLight[i]);
+    // }
         
-    for (int i = 0; i < U_PointLight.length(); ++i)
-    {
-        point += 0.0; //CalcPointLight(U_PointLight[i]);
-    }
+    // for (int i = 0; i < U_PointLight.length(); ++i)
+    // {
+    //     point += CalcPointLight(U_PointLight[i]);
+    // }
 
     light = area + dir + point;
-    
-    // O_FragColour = vec4(fragment.Diffuse * 20.0, fragment.Alpha);
-    // O_FragColour = vec4(fragment.Diffuse * 10.0, fragment.Alpha);
-    // O_FragColour = vec4(light, fragment.Alpha);
     O_FragColour = vec4(fragment.Diffuse * light, fragment.Alpha);
-    // O_FragColour = vec4(light, 1.0);
-    // O_FragColour = vec4(fragment.Normal, 1.0);
 }
